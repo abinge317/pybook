@@ -5,6 +5,7 @@ import datetime
 from bs4 import BeautifulSoup
 import HTMLParser
 import sys
+from PyBook.models import Book
 reload(sys)
 sys.setdefaultencoding('utf8')
 
@@ -30,10 +31,10 @@ def gethotbooks(tag, amount=20, sortedby="rating"):
         li_list = soup.find_all("li", class_="subject-item")
         for li in li_list:
             book = {}
-            bookname = ""
-            for bookname_part in li.find("div", class_="info").h2.a.stripped_strings:
-                bookname += bookname_part
-            book["bookname"] = bookname
+            title = ""
+            for title_part in li.find("div", class_="info").h2.a.stripped_strings:
+                title += title_part
+            book["title"] = title
 
             img = li.find("div", class_="pic").a.img["src"]
             book["img"] = img
@@ -54,6 +55,11 @@ def gethotbooks(tag, amount=20, sortedby="rating"):
             break
         count += 1
     books = sorted(result, lambda x, y: cmp(x[sortedby], y[sortedby]), reverse=True)
+
+    book_list = []
+    for book in books:
+        book_list.append(Book(title = book['title'], img = book['img'], rating = book['rating'], rating_amount = book['rating_amount']))
+    Book.objects.bulk_create(book_list)
     return books[:amount]
 
 def output(books):
@@ -97,7 +103,7 @@ def output(books):
     table_tag = soup.body.find("div", class_="container").table
     count = 0
     for book in books:
-        tr_tag = "<tr><td>%s</td><td style='width: 40%%'>《%s》</td><td style='width: 20%%'><img src=\"%s\" width=\"90\" /></td><td>%s</td><td>%s</td></tr>" % (count+1, book['bookname'], book['img'], book['rating'], book['rating_amount'])
+        tr_tag = "<tr><td>%s</td><td style='width: 40%%'>《%s》</td><td style='width: 20%%'><img src=\"%s\" width=\"90\" /></td><td>%s</td><td>%s</td></tr>" % (count+1, book['title'], book['img'], book['rating'], book['rating_amount'])
         table_tag.append(tr_tag)
         count += 1
 

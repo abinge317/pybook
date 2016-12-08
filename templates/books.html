@@ -27,7 +27,7 @@
     <table class="table table-condensed table-bordered table-striped">
         <tr><th>序号</th><th>书名</th><th>图片</th><th>评分</th><th>评价数</th></tr>
         {% for book in books %}
-            <tr><td>{{ forloop.counter }}</td><td style='width: 40%'>《{{ book.bookname }}》</td><td style='width: 20%'><img src="{{ book.img }}" width="90" /></td><td>{{ book.rating }}</td><td>{{ book.rating_amount }}</td></tr>
+            <tr><td>{{ forloop.counter }}</td><td style='width: 40%'>《{{ book.title }}》</td><td style='width: 20%'><img src="{{ book.img }}" width="90" /></td><td>{{ book.rating }}</td><td>{{ book.rating_amount }}</td></tr>
         {% endfor %}
     </table>
 </div>

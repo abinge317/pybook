@@ -2,6 +2,7 @@
 __author__ = 'jbpeng'
 from django.http import HttpResponse, Http404
 from PyBook import douban
+from PyBook.models import Book
 import datetime
 from django.shortcuts import render_to_response
 def hello(request):
@@ -27,5 +28,6 @@ def show_books(request, tag, amount):
         amount = int(amount)
     except ValueError:
         raise Http404()
-    books = douban.gethotbooks(tag, amount)
+    #books = douban.gethotbooks(tag, amount)
+    books = Book.objects.all()[:amount]
     return render_to_response("books.html", locals())
