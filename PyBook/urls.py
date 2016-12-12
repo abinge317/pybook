@@ -16,10 +16,13 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from PyBook.views import *
+from django.views.generic.base import RedirectView
 urlpatterns = [
     #url(r'^admin/', admin.site.urls),
     url('^hello/$', hello),
     url(r'^books/(.+)/(\d+)/$', show_books),
     url('^time/$', current_time),
     url(r'time/plus/(\d{1,2})/$', time_ahead),
+    url(r'^favicon\.ico$', RedirectView.as_view(url = r'static/favicon.ico')),
+
 ]

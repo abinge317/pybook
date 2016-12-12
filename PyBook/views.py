@@ -5,6 +5,8 @@ from PyBook import douban
 from PyBook.models import Book
 import datetime
 from django.shortcuts import render_to_response
+from django.core.cache import cache
+
 def hello(request):
     return HttpResponse("Hello world")
 
@@ -29,5 +31,10 @@ def show_books(request, tag, amount):
     except ValueError:
         raise Http404()
     #books = douban.gethotbooks(tag, amount)
-    books = Book.objects.all()[:amount]
+    all_books = cache.get('all_books')
+    if not all_books:
+        all_books = Book.objects.all()
+        cache.set('all_books', all_books)
+    books = all_books[:amount]
+
     return render_to_response("books.html", locals())

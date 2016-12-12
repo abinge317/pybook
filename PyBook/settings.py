@@ -26,7 +26,8 @@ SECRET_KEY = 'p7m(1z#^fh2+-n*^7p+il&h=+2@7ji_)gk&=1q(3qj_)g-l-e('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = ['10.33.22.6', '10.33.20.149']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -37,7 +38,7 @@ INSTALLED_APPS = [
     # 'django.contrib.contenttypes',
     # 'django.contrib.sessions',
     # 'django.contrib.messages',
-    # 'django.contrib.staticfiles',
+    'django.contrib.staticfiles',
     'PyBook',
 ]
 
@@ -130,3 +131,15 @@ STATIC_URL = '/static/'
 # TEMPLATE_DIRS = (
 #    os.path.join(BASE_DIR,  'templates').replace('\\', '/'),
 # )
+
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, "static/img"),
+# ]
+
+# cache
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:12000',
+    }
+}
