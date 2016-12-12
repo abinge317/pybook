@@ -4,6 +4,7 @@ from django.http import HttpResponse, Http404
 from PyBook import douban
 from PyBook.models import Book
 import datetime
+import hashlib
 from django.shortcuts import render_to_response
 from django.core.cache import cache
 
@@ -31,10 +32,13 @@ def show_books(request, tag, amount):
     except ValueError:
         raise Http404()
     #books = douban.gethotbooks(tag, amount)
-    all_books = cache.get('all_books')
+    key = 'all_books'+hashlib.md5(tag.encode('utf8')).hexdigest()
+    all_books = cache.get(key)
     if not all_books:
-        all_books = Book.objects.all()
-        cache.set('all_books', all_books)
+        all_books = Book.objects.filter(tag=tag).order_by('-rating')
+        if len(all_books) == 0: #数据库中
+            all_books = douban.gethotbooks(tag, amount, all=True)
+        cache.set(key, all_books)
     books = all_books[:amount]
 
     return render_to_response("books.html", locals())

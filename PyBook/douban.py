@@ -5,64 +5,70 @@ import datetime
 from bs4 import BeautifulSoup
 import HTMLParser
 import sys
+import hashlib
 import memcache
 
-#from PyBook.models import Book
+from PyBook.models import Book
 reload(sys)
 sys.setdefaultencoding('utf8')
 
 
-# def gethotbooks(tag, amount=20, sortedby="rating"):
-#     result = []
-#     count = 0
-#     headers = {
-#         'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36'
-#     }
-#     s = requests.session()
-#     while True:
-#         lastlen = len(result)
-#         #tag = quote(tag)
-#         response = s.get("https://book.douban.com/tag/"+tag+"?start="+str(count*20)+"&type=T", headers=headers)
-#         if response.status_code == 403:
-#             print "我擦， 被禁了"
-#             break
-#         html_doc = response.text
-#
-#         soup = BeautifulSoup(html_doc, "html.parser")
-#
-#         li_list = soup.find_all("li", class_="subject-item")
-#         for li in li_list:
-#             book = {}
-#             title = ""
-#             for title_part in li.find("div", class_="info").h2.a.stripped_strings:
-#                 title += title_part
-#             book["title"] = title
-#
-#             img = li.find("div", class_="pic").a.img["src"]
-#             book["img"] = img
-#
-#             rating_tag = li.find("div", class_="star clearfix").find("span", class_="rating_nums")
-#             if rating_tag is None:
-#                 rating = "-0.0"
-#             else:
-#                 rating = rating_tag.string
-#             book["rating"] = rating
-#
-#             rating_amount = li.find("div", class_="star clearfix").find("span", class_="pl").string.strip()
-#             book["rating_amount"] = rating_amount
-#
-#             result.append(book)
-#
-#         if len(result) == lastlen:
-#             break
-#         count += 1
-#     books = sorted(result, lambda x, y: cmp(x[sortedby], y[sortedby]), reverse=True)
-#
-#     book_list = []
-#     for book in books:
-#         book_list.append(Book(title = book['title'], img = book['img'], rating = book['rating'], rating_amount = book['rating_amount']))
-#     Book.objects.bulk_create(book_list)
-#     return books[:amount]
+def gethotbooks(tag, amount=20, sortedby="rating", all=False):
+    result = []
+    count = 0
+    headers = {
+        'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36'
+    }
+    s = requests.session()
+    while True:
+        lastlen = len(result)
+        #tag = quote(tag)
+        response = s.get("https://book.douban.com/tag/"+tag+"?start="+str(count*20)+"&type=T", headers=headers)
+        if response.status_code == 403:
+            print "我擦， 被禁了"
+            break
+        html_doc = response.text
+
+        soup = BeautifulSoup(html_doc, "html.parser")
+
+        li_list = soup.find_all("li", class_="subject-item")
+        for li in li_list:
+            book = {}
+            title = ""
+            for title_part in li.find("div", class_="info").h2.a.stripped_strings:
+                title += title_part
+            book["title"] = title
+
+            img = li.find("div", class_="pic").a.img["src"]
+            book["img"] = img
+
+            rating_tag = li.find("div", class_="star clearfix").find("span", class_="rating_nums")
+            if rating_tag is None:
+                rating = "-0.0"
+            else:
+                rating = rating_tag.string
+            book["rating"] = rating
+
+            rating_amount = li.find("div", class_="star clearfix").find("span", class_="pl").string.strip()
+            book["rating_amount"] = rating_amount
+
+            book["tag"] = tag
+            result.append(book)
+
+        if len(result) == lastlen:
+            break
+        count += 1
+    books = sorted(result, lambda x, y: cmp(x[sortedby], y[sortedby]), reverse=True)
+
+    book_list = []
+    for book in books:
+        mybook = Book(title = book['title'], img = book['img'], rating = book['rating'], rating_amount = book['rating_amount'], tag = book['tag'])
+        if mybook not in book_list:
+            book_list.append(mybook)
+    Book.objects.bulk_create(book_list)
+    if all:
+        return book_list
+    return book_list[:amount]
 
 def output(books):
     html_parser = HTMLParser.HTMLParser()
@@ -126,10 +132,14 @@ if __name__ == '__main__':
     # endtime = datetime.datetime.now()
     # output = "总共耗时：" + str((endtime-starttime).seconds) + "秒。"
     # print output
-    print "hello"
-    mc = memcache.Client(['127.0.0.1:12000'], debug=1)
-    mc.set('foo', 'bar')
-    print mc.get('foo')
-    mc.set('dt', {'a':1, 'b':2})
-    print mc.get('dt')
+    # print "hello"
+    # mc = memcache.Client(['127.0.0.1:12000'], debug=1)
+    # mc.set('foo', 'bar')
+    # print mc.get('foo')
+    # mc.set('dt', {'a':1, 'b':2})
+    # print mc.get('dt')
+    data = u'你好'
+    m = hashlib.md5(data.encode("utf8"))
+    print m
+    print(m.hexdigest())
 

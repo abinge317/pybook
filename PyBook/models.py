@@ -6,3 +6,4 @@ class Book(models.Model):
     img = models.URLField()
     rating = models.FloatField()
     rating_amount = models.CharField(max_length=20)
+    tag = models.CharField(max_length=100)
