@@ -13,8 +13,9 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 
-def gethotbooks(tag, amount=20, sortedby="rating", all=False):
+def gethotbooks(tag):
     result = []
+    result_distinct = []
     count = 0
     headers = {
         'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36'
@@ -58,17 +59,17 @@ def gethotbooks(tag, amount=20, sortedby="rating", all=False):
         if len(result) == lastlen:
             break
         count += 1
-    books = sorted(result, lambda x, y: cmp(x[sortedby], y[sortedby]), reverse=True)
+    # result去重
+    for item in result:
+        if item not in result_distinct:
+            result_distinct.append(item)
 
-    book_list = []
-    for book in books:
-        mybook = Book(title = book['title'], img = book['img'], rating = book['rating'], rating_amount = book['rating_amount'], tag = book['tag'])
-        if mybook not in book_list:
-            book_list.append(mybook)
-    Book.objects.bulk_create(book_list)
-    if all:
-        return book_list
-    return book_list[:amount]
+    books = []
+    for book in result_distinct:
+        my_book = Book(title=book['title'], img=book['img'], rating=book['rating'],
+                       rating_amount=book['rating_amount'], tag=book['tag'])
+        books.append(my_book)
+    Book.objects.bulk_create(books)
 
 def output(books):
     html_parser = HTMLParser.HTMLParser()

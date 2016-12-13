@@ -31,14 +31,15 @@ def show_books(request, tag, amount):
         amount = int(amount)
     except ValueError:
         raise Http404()
-    #books = douban.gethotbooks(tag, amount)
     key = 'all_books'+hashlib.md5(tag.encode('utf8')).hexdigest()
     all_books = cache.get(key)
     if not all_books:
         all_books = Book.objects.filter(tag=tag).order_by('-rating')
-        if len(all_books) == 0: #数据库中
-            all_books = douban.gethotbooks(tag, amount, all=True)
+        if len(all_books) == 0:
+            douban.gethotbooks(tag)
+            all_books = Book.objects.filter(tag=tag).order_by('-rating')
         cache.set(key, all_books)
     books = all_books[:amount]
+    amount = len(books)
 
     return render_to_response("books.html", locals())
