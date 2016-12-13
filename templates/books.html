@@ -25,7 +25,40 @@
         </div>
     </div>
 </nav>
-<div class="container" style="width: 80%; margin-top:60px; margin-bottom:30px;">
+<div class="container" style="width: 80%;">
+    <form role="form">
+        <div class="form-group">
+            <div class="col-sm-4">
+                <select class="form-control" id="tag">
+                    <option>--请选择类别--</option>
+                    {% for mytag in all_tags %}
+                    <option>{{ mytag.tag }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-4">
+                <select class="form-control" id="amount">
+                    <option>--请选择数量--</option>
+                    <option>10</option>
+                    <option>20</option>
+                    <option>50</option>
+                    <option>100</option>
+                    <option>200</option>
+                    <option>500</option>
+                    <option>1000</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-4">
+                <button type="button" class="btn btn-primary" id="query_btn">查询</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="container"  style="width: 80%;margin-top:10px; margin-bottom:30px;">
     <table class="table table-condensed table-bordered table-striped">
         <tr><th>序号</th><th>书名</th><th>图片</th><th>评分</th><th>评价数</th></tr>
         {% for book in books %}
@@ -34,4 +67,24 @@
     </table>
 </div>
 </body>
+<script>
+
+    $(function(){
+        $('#tag').val("{{ tag }}");
+        $('#amount').val("{{ amount }}");
+    });
+
+    $('#query_btn').click(function(){
+        var tag = $('#tag').val();
+        if(tag=="--请选择类别--") {
+            tag = "编程"
+        }
+        var amount = $('#amount').val();
+        if(amount=="--请选择数量--") {
+            amount = "10"
+        }
+        window.location.href = "/books/" + tag + "/" + amount + "/";
+    });
+
+</script>
 </html>

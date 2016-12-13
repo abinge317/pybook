@@ -20,6 +20,7 @@ from django.views.generic.base import RedirectView
 urlpatterns = [
     #url(r'^admin/', admin.site.urls),
     url('^hello/$', hello),
+    url(r'^books/$', show_books),
     url(r'^books/(.+)/(\d+)/$', show_books),
     url('^time/$', current_time),
     url(r'time/plus/(\d{1,2})/$', time_ahead),

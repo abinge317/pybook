@@ -26,7 +26,7 @@ def time_ahead(request, offset):
     html = "<html><body>In %s hour(s), it will be %s.</body></html>" % (offset, dt)
     return HttpResponse(html)
 
-def show_books(request, tag, amount):
+def show_books(request, tag='编程', amount='10'):
     try:
         amount = int(amount)
     except ValueError:
@@ -41,5 +41,6 @@ def show_books(request, tag, amount):
         cache.set(key, all_books)
     books = all_books[:amount]
     amount = len(books)
+    all_tags = Book.objects.values('tag').distinct()
 
     return render_to_response("books.html", locals())
