@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>热门书单</title>
+    <title>PyStudy-热门书单</title>
     <link rel="shortcut icon" type="image/png" href="{{STATIC_URL}}/favicon.ico"/>
     <!-- 新 Bootstrap 核心 CSS 文件 -->
     <link href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
@@ -22,6 +22,97 @@
     <div class="container-fluid">
         <div class="navbar-header">
             <a class="navbar-brand" href="#">PyStudy | 豆瓣评分最高的{{ amount }}本{{ tag }}类书籍</a>
+        </div>
+        <div>
+            <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        文学
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">小说</a></li>
+                        <li><a href="#">诗词</a></li>
+                        <li><a href="#">童话</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#">外国文学</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#">张爱玲</a></li>
+                        <li><a href="#">钱钟书</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        流行
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">武侠</a></li>
+                        <li><a href="#">推理</a></li>
+                        <li><a href="#">言情</a></li>
+                        <li><a href="#">校园</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#">金庸</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#">韩寒</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        文化
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">历史</a></li>
+                        <li><a href="#">哲学</a></li>
+                        <li><a href="#">人物传记</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#">社会学</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#">心理学</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        生活
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">爱情</a></li>
+                        <li><a href="#">旅行</a></li>
+                        <li><a href="#">励志</a></li>
+                        <li><a href="#">职场</a></li>
+                        <li><a href="#">两性</a></li>
+                        <li><a href="#">人际关系</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        经管
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">经济</a></li>
+                        <li><a href="#">管理</a></li>
+                        <li><a href="#">理财</a></li>
+                        <li><a href="#">金融</a></li>
+                        <li><a href="#">营销</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        科技
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">科普</a></li>
+                        <li><a href="#">互联网</a></li>
+                        <li><a href="#">编程</a></li>
+                        <li><a href="#">算法</a></li>
+                        <li><a href="#">web</a></li>
+                    </ul>
+                </li>
+            </ul>
         </div>
     </div>
 </nav>
@@ -83,6 +174,12 @@
         if(amount=="--请选择数量--") {
             amount = "10"
         }
+        window.location.href = "/books/" + tag + "/" + amount + "/";
+    });
+
+    $('.dropdown-menu li a').click(function(){
+        var tag = $(this).text();
+        var amount = '20'
         window.location.href = "/books/" + tag + "/" + amount + "/";
     });
 
