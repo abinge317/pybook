@@ -2,7 +2,7 @@
 __author__ = 'jbpeng'
 from django.http import HttpResponse, Http404
 from PyBook import douban
-from PyBook.models import Book
+from PyBook.models import *
 import datetime
 import hashlib
 from django.shortcuts import render_to_response
@@ -26,7 +26,7 @@ def time_ahead(request, offset):
     html = "<html><body>In %s hour(s), it will be %s.</body></html>" % (offset, dt)
     return HttpResponse(html)
 
-def show_books(request, tag='编程', amount='10'):
+def show_books(request, tag='编程', amount='20'):
     try:
         amount = int(amount)
     except ValueError:
@@ -36,11 +36,18 @@ def show_books(request, tag='编程', amount='10'):
     if not all_books:
         all_books = Book.objects.filter(tag=tag).order_by('-rating')
         if len(all_books) == 0:
-            douban.gethotbooks(tag)
-            all_books = Book.objects.filter(tag=tag).order_by('-rating')
+            raise Http404()
+            #douban.gethotbooks(tag)
+            #all_books = Book.objects.filter(tag=tag).order_by('-rating')
         cache.set(key, all_books)
     books = all_books[:amount]
     amount = len(books)
-    all_tags = Book.objects.values('tag').distinct()
+    all_tags = SubCategory.objects.values('name').order_by('id')
+    parents = Category.objects.all()
+    categorys = {}
+    for parent in parents:
+        subs = SubCategory.objects.filter(parent=parent).values('name').order_by('id')
+        categorys[parent.name] = subs
 
+    print categorys
     return render_to_response("books.html", locals())
